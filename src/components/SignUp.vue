@@ -15,9 +15,11 @@ const formData = reactive({
 
 const handleSignUp = async () => {
   try {
+    debugger;
     const res = await signUp(formData.email, formData.password);
     if (res.status === 200) {
-      console.log(res).value = "surveys";
+      console.log(res);
+      router.push({ path: "/" });
     }
   } catch (error) {
     console.log(error);

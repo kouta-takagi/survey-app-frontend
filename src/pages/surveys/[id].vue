@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import axios from "axios";
-import { reactive, watchEffect } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { reactive, ref, watchEffect } from "vue";
+import { useRoute } from "vue-router";
 import type { Question } from "@/types/question";
 
 const route = useRoute("/surveys/[id]");
-const router = useRouter();
+
+const isFinished = ref(false);
 
 const questionsBeforeReactive = new Map<number, Question>();
 const questions = reactive(questionsBeforeReactive);
@@ -56,7 +57,7 @@ function handleAnswer(): void {
           },
         }
       );
-      router.push({ path: "/" });
+      isFinished.value = true;
     } catch (error) {
       console.log(error);
     }
@@ -67,18 +68,23 @@ function handleAnswer(): void {
 </script>
 
 <template>
-  <div v-if="questions.size === 0">問題がありません</div>
+  <div v-if="isFinished">
+    回答が終了しました。お疲れ様でした！画面を閉じてください。
+  </div>
   <div v-else>
-    <form v-on:submit.prevent="handleAnswer">
-      <div v-for="question in questions.values()" :key="question.id">
-        <h1>{{ question.content }}</h1>
-        <v-text-field
-          type="text"
-          v-model="answers[String(question.id)]"
-          required
-        />
-      </div>
-      <v-btn type="submit">回答する</v-btn>
-    </form>
+    <div v-if="questions.size === 0">問題がありません</div>
+    <div v-else>
+      <form v-on:submit.prevent="handleAnswer">
+        <div v-for="question in questions.values()" :key="question.id">
+          <h1>{{ question.content }}</h1>
+          <v-text-field
+            type="text"
+            v-model="answers[String(question.id)]"
+            required
+          />
+        </div>
+        <v-btn type="submit">回答する</v-btn>
+      </form>
+    </div>
   </div>
 </template>
