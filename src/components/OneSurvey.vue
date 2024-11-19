@@ -32,7 +32,6 @@ function handleToggle() {
     <RouterLink
       :to="{
         path: `/surveys/${props.id}`,
-        query: { id: 123, type: 'feedback' },
       }"
     >
       このアンケートに回答する
