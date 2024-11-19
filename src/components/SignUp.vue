@@ -15,7 +15,6 @@ const formData = reactive({
 
 const handleSignUp = async () => {
   try {
-    debugger;
     const res = await signUp(formData.email, formData.password);
     if (res.status === 200) {
       console.log(res);
@@ -28,7 +27,6 @@ const handleSignUp = async () => {
 
 onMounted(() => {
   const autoLogin = async () => {
-    debugger;
     try {
       const response = await axios.get(
         "http://localhost:3000/auth/validate_token",
