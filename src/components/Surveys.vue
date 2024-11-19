@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import axios from "axios";
-import { provide, reactive, watchEffect, ref, inject } from "vue";
+import { provide, reactive, watchEffect, ref, onMounted } from "vue";
 import { Survey } from "../types/survey";
 import OneSurvey from "./OneSurvey.vue";
 import { logout } from "@/api/auth";
+import { useRouter } from "vue-router";
+import { getAuthDataFromStorage } from "@/utils/auth-data";
+
+const router = useRouter();
 
 interface ErrorData {
   response: Response;
@@ -22,8 +26,6 @@ const surveyState = reactive({
   title: "",
   description: "",
 });
-
-const pageType = inject("pageType");
 
 watchEffect((): void => {
   const fetchSurveys = async () => {
@@ -106,13 +108,38 @@ const handleLogout = async () => {
   await logout().then((res) => {
     if (res.status === 200) {
       console.log(res);
-      pageType.value = "login";
+      router.push({ path: "/login" });
     } else {
       alert("メールアドレスかパスワードが間違っています");
     }
   });
 };
+
 provide("surveys", surveys);
+
+onMounted(() => {
+  const autoLogin = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/auth/validate_token",
+        {
+          headers: getAuthDataFromStorage(),
+        }
+      );
+      if (response.status !== 200) {
+        console.error(response);
+        router.push({ path: "/login" });
+      } else {
+        console.log(response);
+      }
+    } catch (error) {
+      console.error(error);
+      router.push({ path: "/login" });
+    }
+  };
+
+  autoLogin();
+});
 </script>
 
 <template>

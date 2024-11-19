@@ -1,26 +1,49 @@
 <script setup lang="ts">
-import { inject, reactive } from 'vue'
-import { signUp } from '@/api/auth'
+import { onMounted, reactive } from "vue";
+import { signUp } from "@/api/auth";
+import { getAuthDataFromStorage } from "@/utils/auth-data";
+import { useRouter } from "vue-router";
+import axios from "axios";
+
+const router = useRouter();
 
 const formData = reactive({
-  email: '',
-  password: '',
-  password_confirmation: '',
-})
+  email: "",
+  password: "",
+  password_confirmation: "",
+});
 
 const handleSignUp = async () => {
   try {
-    const res = await signUp(formData.email, formData.password)
+    const res = await signUp(formData.email, formData.password);
     if (res.status === 200) {
-      console.log(res)
-      pageType.value = 'surveys'
+      console.log(res).value = "surveys";
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
-const pageType = inject('pageType')
+onMounted(() => {
+  const autoLogin = async () => {
+    debugger;
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/auth/validate_token",
+        {
+          headers: getAuthDataFromStorage(),
+        }
+      );
+      if (response.status === 200) {
+        router.push({ path: "/" });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  autoLogin();
+});
 </script>
 
 <template>
@@ -53,5 +76,11 @@ const pageType = inject('pageType')
       </v-row>
     </v-container>
   </v-form>
-  <!-- <button v-on:click="handleLogout">ko</button> -->
+  <RouterLink
+    :to="{
+      path: `/login`,
+    }"
+  >
+    ログインページへ
+  </RouterLink>
 </template>

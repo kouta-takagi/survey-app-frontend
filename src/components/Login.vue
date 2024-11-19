@@ -1,23 +1,47 @@
 <script setup lang="ts">
-import { inject, reactive } from 'vue'
-import { login } from '@/api/auth'
+import { onMounted, reactive } from "vue";
+import { login } from "@/api/auth";
+import axios from "axios";
+import { getAuthDataFromStorage } from "@/utils/auth-data";
+import { useRouter } from "vue-router";
 
-const pageType = inject('pageType')
+const router = useRouter();
 
 const formData = reactive({
-  email: '',
-  password: '',
-})
+  email: "",
+  password: "",
+});
 const handleLogin = async () => {
-  await login(formData.email, formData.password).then(res => {
+  await login(formData.email, formData.password).then((res) => {
     if (res.status === 200) {
-      console.log(res)
-      pageType.value = 'surveys'
+      console.log(res);
+      router.push({ path: "/" });
     } else {
-      alert('メールアドレスかパスワードが間違っています')
+      alert("メールアドレスかパスワードが間違っています");
     }
-  })
-}
+  });
+};
+
+onMounted(() => {
+  const autoLogin = async () => {
+    debugger;
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/auth/validate_token",
+        {
+          headers: getAuthDataFromStorage(),
+        }
+      );
+      if (response.status === 200) {
+        router.push({ path: "/" });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  autoLogin();
+});
 </script>
 
 <template>
@@ -41,4 +65,11 @@ const handleLogin = async () => {
       </v-row>
     </v-container>
   </v-form>
+  <RouterLink
+    :to="{
+      path: `/signup`,
+    }"
+  >
+    新規登録ページへ
+  </RouterLink>
 </template>
