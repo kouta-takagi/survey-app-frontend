@@ -43,10 +43,14 @@ function handleToggle() {
       :to="{
         path: `/surveys/${props.id}`,
       }"
+      class="ml-2"
     >
       このアンケートのURL
     </RouterLink>
-    <button v-on:click="onDeleteButtonClick">このアンケートを削除する</button>
+    <br />
+    <v-btn variant="tonal" class="my-2 ml-2" v-on:click="onDeleteButtonClick"
+      >このアンケートを削除する</v-btn
+    >
 
     <v-card-text class="bg-surface-light pt-4">
       <div class="d-flex justify-space-between">

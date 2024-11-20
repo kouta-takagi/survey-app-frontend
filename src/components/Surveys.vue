@@ -81,7 +81,7 @@ function handleCreate(): void {
       });
       surveyState.title = "";
       surveyState.description = "";
-      message("新規作成が完了しました", { autoHide: true, hideTime: 3000 });
+      message("アンケートを作成しました", { autoHide: true, hideTime: 3000 });
     } catch (error) {
       if (typeof error !== "object" || error === null) {
         return false;
