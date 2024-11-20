@@ -19,7 +19,7 @@ export default defineComponent({
   <teleport to="#flash-message">
     <transition name="fade">
       <div v-if="isShow" class="flash-message" role="alert">
-        <div class="message">{{ messageValue }}</div>
+        <pre class="message">{{ messageValue }}</pre>
       </div>
     </transition>
   </teleport>
@@ -40,8 +40,6 @@ export default defineComponent({
 }
 
 .message {
-  min-width: 300px; /* 幅を広げる */
-  height: 50px; /* 高さを調整 */
   padding: 10px 30px; /* 内側の余白を増やす */
 
   color: #ffffff;

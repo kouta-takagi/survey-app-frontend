@@ -29,11 +29,18 @@ export const logout = () => {
     });
 };
 
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (
+  name: string,
+  email: string,
+  password: string,
+  password_confirmation: string
+) => {
   try {
     const res = await axios.post("http://localhost:3000/auth", {
+      name,
       email,
       password,
+      password_confirmation,
     });
 
     setAuthDataFromResponse(res.headers);
