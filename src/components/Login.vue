@@ -24,7 +24,6 @@ const handleLogin = async () => {
 
 onMounted(() => {
   const autoLogin = async () => {
-    debugger;
     try {
       const response = await axios.get(
         "http://localhost:3000/auth/validate_token",

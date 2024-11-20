@@ -45,7 +45,6 @@ watchEffect((): void => {
 function handleAnswer(): void {
   const createAnswers = async () => {
     try {
-      debugger;
       await axios.post(
         `http://localhost:3000/surveys/${route.params.id}/answers`,
         { answers },
