@@ -4,6 +4,9 @@ import { signUp } from "@/api/auth";
 import { getAuthDataFromStorage } from "@/utils/auth-data";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { useMessage } from "@/composables/useMessage";
+
+const { message } = useMessage();
 
 const router = useRouter();
 
@@ -18,6 +21,7 @@ const handleSignUp = async () => {
     const res = await signUp(formData.email, formData.password);
     if (res.status === 200) {
       console.log(res);
+      message("新規登録が完了しました", { autoHide: true, hideTime: 3000 });
       router.push({ path: "/" });
     }
   } catch (error) {

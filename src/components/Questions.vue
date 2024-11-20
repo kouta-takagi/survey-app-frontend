@@ -1,29 +1,32 @@
 <script setup lang="ts">
-import { watchEffect, reactive, ref, provide } from 'vue'
-import type { Question } from '../types/question'
-import axios from 'axios'
-import OneQuestion from './OneQuestion.vue'
+import { watchEffect, reactive, ref, provide } from "vue";
+import type { Question } from "../types/question";
+import axios from "axios";
+import OneQuestion from "./OneQuestion.vue";
+import { useMessage } from "@/composables/useMessage";
+
+const { message } = useMessage();
 
 interface Props {
-  survey_id: number
+  survey_id: number;
 }
 
 interface ErrorData {
-  response: Response
+  response: Response;
 }
 
 interface Response {
-  data: []
+  data: [];
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
-const questionState = ref('')
+const questionState = ref("");
 
-const validations = ref<string[]>([])
+const validations = ref<string[]>([]);
 
-const questionsBeforeReactive = new Map<number, Question>()
-const questions = reactive(questionsBeforeReactive)
+const questionsBeforeReactive = new Map<number, Question>();
+const questions = reactive(questionsBeforeReactive);
 
 watchEffect((): void => {
   const fetchQuestions = async () => {
@@ -32,27 +35,27 @@ watchEffect((): void => {
         `http://localhost:3000/surveys/${props.survey_id}/questions`,
         {
           headers: {
-            'access-token': localStorage.getItem('access-token'),
-            client: localStorage.getItem('client'),
-            uid: localStorage.getItem('uid'),
+            "access-token": localStorage.getItem("access-token"),
+            client: localStorage.getItem("client"),
+            uid: localStorage.getItem("uid"),
           },
-        },
-      )
-      response.data.forEach(obj => {
+        }
+      );
+      response.data.forEach((obj) => {
         questions.set(obj.id, {
           id: obj.id,
           content: obj.content,
           survey_id: obj.survey_id,
-        })
-      })
-      console.log('success')
+        });
+      });
+      console.log("success");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  fetchQuestions()
-})
+  fetchQuestions();
+});
 
 function handleCreate(): void {
   const createQuestion = async () => {
@@ -64,47 +67,48 @@ function handleCreate(): void {
         },
         {
           headers: {
-            'access-token': localStorage.getItem('access-token'),
-            client: localStorage.getItem('client'),
-            uid: localStorage.getItem('uid'),
+            "access-token": localStorage.getItem("access-token"),
+            client: localStorage.getItem("client"),
+            uid: localStorage.getItem("uid"),
           },
-        },
-      )
-      const res = response.data
+        }
+      );
+      const res = response.data;
       questions.set(res.id, {
         id: res.id,
         content: res.content,
         survey_id: res.survey_id,
-      })
-      questionState.value = ''
-      validations.value = []
+      });
+      questionState.value = "";
+      validations.value = [];
+      message("新しい質問を作成しました", { autoHide: true, hideTime: 3000 });
     } catch (error) {
-      if (typeof error !== 'object' || error === null) {
-        return false
+      if (typeof error !== "object" || error === null) {
+        return false;
       }
 
-      const errorData = error as Record<keyof ErrorData, unknown>
-      if (typeof errorData.response !== 'object') {
-        return false
+      const errorData = error as Record<keyof ErrorData, unknown>;
+      if (typeof errorData.response !== "object") {
+        return false;
       }
 
-      const response = errorData.response as Record<keyof Response, unknown>
+      const response = errorData.response as Record<keyof Response, unknown>;
       if (!Array.isArray(response.data)) {
-        return false
+        return false;
       }
 
-      if (typeof response.data === 'string') {
-        return false
+      if (typeof response.data === "string") {
+        return false;
       }
 
-      validations.value = response.data
+      validations.value = response.data;
     }
-  }
+  };
 
-  createQuestion()
+  createQuestion();
 }
 
-provide('questions', questions)
+provide("questions", questions);
 </script>
 
 <template>

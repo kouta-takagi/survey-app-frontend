@@ -34,7 +34,7 @@ function handleToggle() {
         path: `/surveys/${props.id}`,
       }"
     >
-      このアンケートに回答する
+      このアンケートのURL
     </RouterLink>
 
     <v-card-text class="bg-surface-light pt-4">

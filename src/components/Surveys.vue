@@ -6,6 +6,9 @@ import OneSurvey from "./OneSurvey.vue";
 import { logout } from "@/api/auth";
 import { useRouter } from "vue-router";
 import { getAuthDataFromStorage } from "@/utils/auth-data";
+import { useMessage } from "@/composables/useMessage";
+
+const { message } = useMessage();
 
 const router = useRouter();
 
@@ -78,6 +81,7 @@ function handleCreate(): void {
       });
       surveyState.title = "";
       surveyState.description = "";
+      message("新規作成が完了しました", { autoHide: true, hideTime: 3000 });
     } catch (error) {
       if (typeof error !== "object" || error === null) {
         return false;
@@ -108,6 +112,7 @@ const handleLogout = async () => {
   await logout().then((res) => {
     if (res.status === 200) {
       console.log(res);
+      message("ログアウトしました", { autoHide: true, hideTime: 3000 });
       router.push({ path: "/login" });
     } else {
       alert("メールアドレスかパスワードが間違っています");
@@ -128,12 +133,14 @@ onMounted(() => {
       );
       if (response.status !== 200) {
         console.error(response);
+        message("ログインしてください", { autoHide: true, hideTime: 3000 });
         router.push({ path: "/login" });
       } else {
         console.log(response);
       }
     } catch (error) {
       console.error(error);
+      message("ログインしてください", { autoHide: true, hideTime: 3000 });
       router.push({ path: "/login" });
     }
   };

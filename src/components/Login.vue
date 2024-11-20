@@ -4,6 +4,9 @@ import { login } from "@/api/auth";
 import axios from "axios";
 import { getAuthDataFromStorage } from "@/utils/auth-data";
 import { useRouter } from "vue-router";
+import { useMessage } from "@/composables/useMessage";
+
+const { message } = useMessage();
 
 const router = useRouter();
 
@@ -15,6 +18,7 @@ const handleLogin = async () => {
   await login(formData.email, formData.password).then((res) => {
     if (res.status === 200) {
       console.log(res);
+      message("ログインしました", { autoHide: true, hideTime: 3000 });
       router.push({ path: "/" });
     } else {
       alert("メールアドレスかパスワードが間違っています");

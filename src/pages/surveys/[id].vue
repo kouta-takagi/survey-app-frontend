@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import axios from "axios";
-import { reactive, ref, watchEffect } from "vue";
+import { onMounted, reactive, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import type { Question } from "@/types/question";
+import { getAuthDataFromStorage } from "@/utils/auth-data";
+import { useRouter } from "vue-router";
+import { useMessage } from "@/composables/useMessage";
+
+const { message } = useMessage();
 
 const route = useRoute("/surveys/[id]");
+
+const router = useRouter();
 
 const isFinished = ref(false);
 
@@ -64,6 +71,33 @@ function handleAnswer(): void {
 
   createAnswers();
 }
+
+onMounted(() => {
+  const autoLogin = async () => {
+    try {
+      debugger;
+      const response = await axios.get(
+        "http://localhost:3000/auth/validate_token",
+        {
+          headers: getAuthDataFromStorage(),
+        }
+      );
+      if (response.status !== 200) {
+        console.error(response);
+        message("ログインしてください", { autoHide: true, hideTime: 3000 });
+        router.push({ path: "/login" });
+      } else {
+        console.log(response);
+      }
+    } catch (error) {
+      console.error(error);
+      message("ログインしてください", { autoHide: true, hideTime: 3000 });
+      router.push({ path: "/login" });
+    }
+  };
+
+  autoLogin();
+});
 </script>
 
 <template>
