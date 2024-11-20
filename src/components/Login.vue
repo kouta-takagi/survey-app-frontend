@@ -21,7 +21,10 @@ const handleLogin = async () => {
       message("ログインしました", { autoHide: true, hideTime: 3000 });
       router.push({ path: "/" });
     } else {
-      alert("メールアドレスかパスワードが間違っています");
+      message("メールアドレスかパスワードが間違っています", {
+        autoHide: true,
+        hideTime: 3000,
+      });
     }
   });
 };

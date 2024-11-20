@@ -208,5 +208,7 @@ function handleDelete(id: number) {
       </v-container>
     </v-form>
   </div>
-  <button v-on:click="handleLogout">ログアウト</button>
+  <v-btn variant="tonal" class="mt-3 ml-3" v-on:click="handleLogout"
+    >ログアウト</v-btn
+  >
 </template>
