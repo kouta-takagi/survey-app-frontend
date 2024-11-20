@@ -152,13 +152,16 @@ onMounted(() => {
 <template>
   <h1 class="my-5">・アンケート一覧</h1>
 
-  <OneSurvey
-    v-for="survey in surveys.values()"
-    v-bind:key="survey.id"
-    v-bind:id="survey.id"
-    v-bind:title="survey.title"
-    v-bind:description="survey.description"
-  />
+  <div v-if="surveys.size !== 0">
+    <OneSurvey
+      v-for="survey in surveys.values()"
+      v-bind:key="survey.id"
+      v-bind:id="survey.id"
+      v-bind:title="survey.title"
+      v-bind:description="survey.description"
+    />
+  </div>
+  <div v-else>アンケートがありません</div>
 
   <div class="border rounded-lg bg-white">
     <v-form v-on:submit.prevent="handleCreate">

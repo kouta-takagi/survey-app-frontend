@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
+// import type { AxiosError } from "axios";
 import { onMounted, reactive, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import type { Question } from "@/types/question";
@@ -65,7 +66,7 @@ function handleAnswer(): void {
       );
       isFinished.value = true;
     } catch (error) {
-      console.log(error);
+      alert(error.response.data.message);
     }
   };
 
@@ -75,7 +76,6 @@ function handleAnswer(): void {
 onMounted(() => {
   const autoLogin = async () => {
     try {
-      debugger;
       const response = await axios.get(
         "http://localhost:3000/auth/validate_token",
         {
@@ -110,11 +110,7 @@ onMounted(() => {
       <form v-on:submit.prevent="handleAnswer">
         <div v-for="question in questions.values()" :key="question.id">
           <h1>{{ question.content }}</h1>
-          <v-text-field
-            type="text"
-            v-model="answers[String(question.id)]"
-            required
-          />
+          <v-text-field type="text" v-model="answers[String(question.id)]" />
         </div>
         <v-btn type="submit">回答する</v-btn>
       </form>
