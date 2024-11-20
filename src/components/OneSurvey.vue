@@ -3,10 +3,16 @@ import { inject, ref } from "vue";
 import type { Survey } from "../types/survey";
 import Questions from "./Questions.vue";
 import { RouterLink } from "vue-router";
-import axios from "axios";
-import { useMessage } from "@/composables/useMessage";
 
-const { message } = useMessage();
+interface Emits {
+  (event: "delete", id: number): void;
+}
+
+const emit = defineEmits<Emits>();
+
+const onDeleteButtonClick = (): void => {
+  emit("delete", props.id);
+};
 
 interface Props {
   id: number;
@@ -25,23 +31,6 @@ const survey = surveys.get(props.id) as Survey;
 function handleToggle() {
   isOpen.value = !isOpen.value;
 }
-
-function handleDelete() {
-  axios
-    .delete(`http://localhost:3000/surveys/${props.id}`, {
-      headers: {
-        "access-token": localStorage.getItem("access-token"),
-        client: localStorage.getItem("client"),
-        uid: localStorage.getItem("uid"),
-      },
-    })
-    .then(() => {
-      message("アンケートの削除が完了しました", {
-        autoHide: true,
-        hideTime: 3000,
-      });
-    });
-}
 </script>
 
 <template>
@@ -57,7 +46,7 @@ function handleDelete() {
     >
       このアンケートのURL
     </RouterLink>
-    <button v-on:click="handleDelete">このアンケートを削除する</button>
+    <button v-on:click="onDeleteButtonClick">このアンケートを削除する</button>
 
     <v-card-text class="bg-surface-light pt-4">
       <div class="d-flex justify-space-between">

@@ -147,6 +147,25 @@ onMounted(() => {
 
   autoLogin();
 });
+
+function handleDelete(id: number) {
+  axios
+    .delete(`http://localhost:3000/surveys/${id}`, {
+      headers: {
+        "access-token": localStorage.getItem("access-token"),
+        client: localStorage.getItem("client"),
+        uid: localStorage.getItem("uid"),
+      },
+    })
+    .then((res) => {
+      debugger;
+      surveys.delete(res.data.id);
+      message("アンケートの削除が完了しました", {
+        autoHide: true,
+        hideTime: 3000,
+      });
+    });
+}
 </script>
 
 <template>
@@ -159,6 +178,7 @@ onMounted(() => {
       v-bind:id="survey.id"
       v-bind:title="survey.title"
       v-bind:description="survey.description"
+      v-on:delete="handleDelete"
     />
   </div>
   <div v-else>アンケートがありません</div>
